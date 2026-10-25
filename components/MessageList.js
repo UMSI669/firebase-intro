@@ -17,16 +17,19 @@ export default function MessageList({ messages, loading, error }) {
 
   return (
     <FlatList
-      contentContainerStyle={styles.list}
+      contentContainerStyle={styles.listContent}
       data={messages}
       keyExtractor={message => message.id}
+      keyboardShouldPersistTaps="handled"
       renderItem={({ item }) => <MessageCard message={item} />}
+      style={styles.list}
     />
   );
 }
 
 const styles = StyleSheet.create({
-  list: { gap: 10, paddingBottom: 24 },
+  list: { flex: 1 },
+  listContent: { gap: 10, paddingBottom: 24 },
   card: { backgroundColor: '#fff', borderRadius: 10, padding: 14 },
   message: { color: '#19233b', fontSize: 16, lineHeight: 22 },
   author: { color: '#66728a', fontSize: 12, marginTop: 8 },

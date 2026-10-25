@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { observeAuthState, signIn, signOutCurrentUser, signUp } from './firebase/authService';
 import { createMessage, subscribeToMessages } from './firebase/messageService';
@@ -86,7 +86,7 @@ export default function App() {
     <SafeAreaProvider>
       <SafeAreaView style={styles.safeArea}>
         <StatusBar barStyle="dark-content" />
-        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+        <View style={styles.content}>
           <Text style={styles.eyebrow}>A SMALL FIREBASE CODE TOUR</Text>
           <Text style={styles.heading}>Firebase tour</Text>
           <Text style={styles.intro}>A shared message board, powered by Authentication and live Firestore updates.</Text>
@@ -121,7 +121,7 @@ export default function App() {
             />
           )}
           <Text style={styles.footer}>Authentication decides who can join. Firestore Rules decide what each signed-in person is allowed to do.</Text>
-        </ScrollView>
+        </View>
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -129,13 +129,13 @@ export default function App() {
 
 const styles = StyleSheet.create({
   safeArea: { backgroundColor: '#f4f6fb', flex: 1 },
-  content: { gap: 14, padding: 22, paddingTop: 34 },
+  content: { flex: 1, gap: 14, padding: 22, paddingTop: 34 },
   eyebrow: { color: '#4358d5', fontSize: 11, fontWeight: '800', letterSpacing: 1.2 },
   heading: { color: '#19233b', fontSize: 32, fontWeight: '800' },
   intro: { color: '#5f6b83', fontSize: 16, lineHeight: 23, marginBottom: 8 },
   loading: { alignItems: 'center', flexDirection: 'row', gap: 10, minHeight: 100 },
   muted: { color: '#5f6b83', fontSize: 14 },
-  board: { gap: 14 },
+  board: { flex: 1, gap: 14 },
   userRow: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
   userCopy: { gap: 4 },
   sectionTitle: { color: '#19233b', fontSize: 18, fontWeight: '700' },
