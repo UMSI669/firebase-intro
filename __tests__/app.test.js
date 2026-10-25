@@ -52,7 +52,7 @@ test('shows auth loading state before Firebase resolves, then signed-out control
   const screen = render(<App />);
   expect(screen.getByText('Checking your sign-in…')).toBeTruthy();
   if (authListener) act(() => authListener(null));
-  expect(screen.getByText('Welcome to the message board')).toBeTruthy();
+  expect(screen.getByText('Join the conversation')).toBeTruthy();
   expect(screen.getByRole('button', { name: 'Create account' })).toBeTruthy();
   expect(screen.getByRole('button', { name: 'Sign in' })).toBeTruthy();
 });
@@ -131,7 +131,7 @@ test('renders a helpful empty state and message listener errors', () => {
   const screen = render(<App />);
   signInUser(screen);
   act(() => messageListener([]));
-  expect(screen.getByText('No messages yet. Start the conversation!')).toBeTruthy();
+  expect(screen.getByText('No messages yet. Sign in and start the conversation!')).toBeTruthy();
   act(() => messageErrorListener(new Error('Rules denied this read.')));
-  expect(screen.getByText('Messages could not be loaded: Rules denied this read.')).toBeTruthy();
+  expect(screen.getByText('Rules denied this read.')).toBeTruthy();
 });

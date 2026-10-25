@@ -2,7 +2,7 @@ import React from 'react';
 import { ActivityIndicator, FlatList, Pressable, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { observeAuthState, signIn, signOutCurrentUser, signUp } from './firebase/authService';
-import { createMessage, loadMessagesOnce, subscribeToMessages } from './firebase/messageService';
+import { createMessage, subscribeToMessages } from './firebase/messageService';
 
 export default function App() {
   const [email, setEmail] = React.useState('');
@@ -69,11 +69,12 @@ export default function App() {
   //
   // WHY: The one-time read is useful for seeing the collection's current contents.
   // PRODUCT QUESTION: Is one photograph enough for a conversation?
-  // DO: Uncomment this effect and the PART 5 block in messageService.js.
+  // DO: Uncomment this effect and the PART 5 block in messageService.js to
+  //     demonstrate the one-time read. When moving to PART 6, disable this effect.
   // VERIFY: Existing messages appear once when the signed-in board opens.
-  // NEXT: For live updates, disable this effect and search for "PART 6" below.
+  // NEXT: For live updates, keep this effect disabled and search for "PART 6" below.
   // ======================================================
-
+  /*
   React.useEffect(() => {
     if (!user) return;
 
@@ -83,6 +84,7 @@ export default function App() {
       .catch(error => setMessageError(error.message))
       .finally(() => setMessagesLoading(false));
   }, [user]);
+  */
 
 
   // ======================================================
@@ -163,7 +165,7 @@ export default function App() {
               </Pressable>
             </View>
             <Text style={styles.muted}>
-              {!authReady ? 'Auth observer not enabled yet. Complete Part 2.' : user ? `Signed in as ${user.email}` : 'You are signed out.'}
+              {!authReady ? 'Checking your sign-in…' : user ? `Signed in as ${user.email}` : 'You are signed out.'}
             </Text>
             {user ? (
               <Pressable accessibilityRole="button" disabled={authBusy} onPress={() => runAuthOperation(signOutCurrentUser)}>
