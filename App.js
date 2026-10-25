@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { observeAuthState, signIn, signOutCurrentUser, signUp } from './firebase/authService';
 import { createMessage, subscribeToMessages } from './firebase/messageService';
 import AuthPanel from './components/AuthPanel';
