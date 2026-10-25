@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { observeAuthState, signIn, signOutCurrentUser, signUp } from './firebase/authService';
 import { createMessage, subscribeToMessages } from './firebase/messageService';
 import AuthPanel from './components/AuthPanel';
@@ -83,45 +83,47 @@ export default function App() {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="dark-content" />
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <Text style={styles.eyebrow}>A SMALL FIREBASE CODE TOUR</Text>
-        <Text style={styles.heading}>Firebase tour</Text>
-        <Text style={styles.intro}>A shared message board, powered by Authentication and live Firestore updates.</Text>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.safeArea}>
+        <StatusBar barStyle="dark-content" />
+        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+          <Text style={styles.eyebrow}>A SMALL FIREBASE CODE TOUR</Text>
+          <Text style={styles.heading}>Firebase tour</Text>
+          <Text style={styles.intro}>A shared message board, powered by Authentication and live Firestore updates.</Text>
 
-        {!authReady ? (
-          <View style={styles.loading}>
-            <ActivityIndicator accessibilityLabel="Checking authentication" />
-            <Text style={styles.muted}>Checking your sign-in…</Text>
-          </View>
-        ) : user ? (
-          <View style={styles.board}>
-            <View style={styles.userRow}>
-              <View style={styles.userCopy}>
-                <Text style={styles.sectionTitle}>You’re signed in</Text>
-                <Text style={styles.muted}>{user.email}</Text>
-              </View>
-              <Pressable accessibilityRole="button" disabled={authBusy} onPress={() => handleAuth(signOutCurrentUser)} style={styles.signOut}>
-                <Text style={styles.signOutText}>{authBusy ? 'Please wait…' : 'Sign out'}</Text>
-              </Pressable>
+          {!authReady ? (
+            <View style={styles.loading}>
+              <ActivityIndicator accessibilityLabel="Checking authentication" />
+              <Text style={styles.muted}>Checking your sign-in…</Text>
             </View>
-            <View style={styles.divider} />
-            <Text style={styles.sectionTitle}>Community messages</Text>
-            <MessageComposer onSend={handleSend} busy={sending} error={messageError} />
-            <MessageList error={messageError} loading={messagesLoading} messages={messages} />
-          </View>
-        ) : (
-          <AuthPanel
-            busy={authBusy}
-            error={authError}
-            onSignIn={(email, password) => handleAuth(signIn, email, password)}
-            onSignUp={(email, password) => handleAuth(signUp, email, password)}
-          />
-        )}
-        <Text style={styles.footer}>Authentication decides who can join. Firestore Rules decide what each signed-in person is allowed to do.</Text>
-      </ScrollView>
-    </SafeAreaView>
+          ) : user ? (
+            <View style={styles.board}>
+              <View style={styles.userRow}>
+                <View style={styles.userCopy}>
+                  <Text style={styles.sectionTitle}>You’re signed in</Text>
+                  <Text style={styles.muted}>{user.email}</Text>
+                </View>
+                <Pressable accessibilityRole="button" disabled={authBusy} onPress={() => handleAuth(signOutCurrentUser)} style={styles.signOut}>
+                  <Text style={styles.signOutText}>{authBusy ? 'Please wait…' : 'Sign out'}</Text>
+                </Pressable>
+              </View>
+              <View style={styles.divider} />
+              <Text style={styles.sectionTitle}>Community messages</Text>
+              <MessageComposer onSend={handleSend} busy={sending} error={messageError} />
+              <MessageList error={messageError} loading={messagesLoading} messages={messages} />
+            </View>
+          ) : (
+            <AuthPanel
+              busy={authBusy}
+              error={authError}
+              onSignIn={(email, password) => handleAuth(signIn, email, password)}
+              onSignUp={(email, password) => handleAuth(signUp, email, password)}
+            />
+          )}
+          <Text style={styles.footer}>Authentication decides who can join. Firestore Rules decide what each signed-in person is allowed to do.</Text>
+        </ScrollView>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
