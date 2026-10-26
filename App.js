@@ -16,6 +16,7 @@ export default function App() {
   const [messagesLoading, setMessagesLoading] = React.useState(false);
   const [messageError, setMessageError] = React.useState('');
   const [sending, setSending] = React.useState(false);
+  const [sendError, setSendError] = React.useState('');
 
   // ======================================================
   // PART 2 - OBSERVE AUTHENTICATION STATE
@@ -58,7 +59,7 @@ export default function App() {
       await createMessage({ text: messageText, user });
       setMessageText('');
     } catch (error) {
-      setMessageError(error.message || 'Your message could not be sent.');
+      setSendError(error.message || 'Your message could not be sent.');
     } finally {
       setSending(false);
     }
@@ -74,15 +75,15 @@ export default function App() {
   // NEXT: For live updates, disable this effect and search for "PART 6" below.
   // ======================================================
 
-  React.useEffect(() => {
-    if (!user) return;
+  // React.useEffect(() => {
+  //   if (!user) return;
 
-    setMessagesLoading(true);
-    loadMessagesOnce()
-      .then(nextMessages => setMessages(nextMessages))
-      .catch(error => setMessageError(error.message))
-      .finally(() => setMessagesLoading(false));
-  }, [user]);
+  //   setMessagesLoading(true);
+  //   loadMessagesOnce()
+  //     .then(nextMessages => setMessages(nextMessages))
+  //     .catch(error => setMessageError(error.message))
+  //     .finally(() => setMessagesLoading(false));
+  // }, [user]);
 
 
   // ======================================================
@@ -98,27 +99,25 @@ export default function App() {
   // ======================================================
 
   React.useEffect(() => {
-    if (!user) {
-      setMessages([]);
-      setMessagesLoading(false);
-      return undefined;
-    }
+  if (!user) return;
 
-    setMessagesLoading(true);
-    setMessageError('');
-    const unsubscribe = subscribeToMessages(
-      nextMessages => {
-        setMessages(nextMessages);
-        setMessagesLoading(false);
-      },
-      error => {
-        setMessageError(error.message);
-        setMessagesLoading(false);
-      },
-    );
+  setMessagesLoading(true);
+  setMessageError('');
+
+  const unsubscribe = subscribeToMessages(
+    nextMessages => {
+      setMessages(nextMessages);
+      setMessagesLoading(false);
+    },
+    error => {
+      setMessageError(error.message);
+      setMessagesLoading(false);
+    }
+  );
 
     // PART 7 - Uncomment this line so the effect stops listening when it ends.
-    return unsubscribe;
+
+  return unsubscribe;
   }, [user]);
 
 
@@ -190,7 +189,8 @@ export default function App() {
                 <Text style={styles.primaryText}>Send</Text>
               </Pressable>
             </View>
-            {messageError ? <Text accessibilityRole="alert" style={styles.error}>{messageError}</Text> : null}
+            {sendError ? (<Text accessibilityRole="alert" style={styles.error}>{sendError}</Text>) : null}
+            {messageError ? (<Text accessibilityRole="alert" style={styles.error}>Messages could not be loaded: {messageError}</Text>) : null}
             <FlatList
               contentContainerStyle={styles.listContent}
               data={messages}
@@ -198,7 +198,11 @@ export default function App() {
               keyboardShouldPersistTaps="handled"
               ListEmptyComponent={(
                 <Text style={styles.muted}>
-                  {messagesLoading ? 'Loading messages…' : 'No messages yet. Sign in and start the conversation!'}
+                  {messagesLoading
+                    ? 'Loading messages…'
+                    : user
+                      ? 'No messages yet. Start the conversation!'
+                      : 'No messages yet. Sign in and start the conversation!'}
                 </Text>
               )}
               renderItem={({ item }) => (
