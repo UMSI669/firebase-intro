@@ -16,6 +16,7 @@ export default function App() {
   const [messagesLoading, setMessagesLoading] = React.useState(false);
   const [messageError, setMessageError] = React.useState('');
   const [sending, setSending] = React.useState(false);
+  const [sendError, setSendError] = React.useState('');
 
   // ======================================================
   // PART 2 - OBSERVE AUTHENTICATION STATE
@@ -26,7 +27,7 @@ export default function App() {
   // VERIFY: The status below changes from “Checking…” to signed-out or signed-in.
   // NEXT: Search for "PART 3 - SIGN UP, SIGN IN, AND SIGN OUT" in authService.js.
   // ======================================================
-  /*
+
   React.useEffect(() => {
     const unsubscribe = observeAuthState(nextUser => {
       setUser(nextUser);
@@ -35,7 +36,7 @@ export default function App() {
 
     return unsubscribe;
   }, []);
-  */
+
 
   // These buttons and error messages are already wired to the service stubs.
   // PART 3 works as soon as the three return lines in authService.js are enabled.
@@ -58,7 +59,7 @@ export default function App() {
       await createMessage({ text: messageText, user });
       setMessageText('');
     } catch (error) {
-      setMessageError(error.message || 'Your message could not be sent.');
+      setSendError(error.message || 'Your message could not be sent.');
     } finally {
       setSending(false);
     }
@@ -73,17 +74,17 @@ export default function App() {
   // VERIFY: Existing messages appear once when the signed-in board opens.
   // NEXT: For live updates, disable this effect and search for "PART 6" below.
   // ======================================================
-  /*
-  React.useEffect(() => {
-    if (!user) return;
 
-    setMessagesLoading(true);
-    loadMessagesOnce()
-      .then(nextMessages => setMessages(nextMessages))
-      .catch(error => setMessageError(error.message))
-      .finally(() => setMessagesLoading(false));
-  }, [user]);
-  */
+  // React.useEffect(() => {
+  //   if (!user) return;
+
+  //   setMessagesLoading(true);
+  //   loadMessagesOnce()
+  //     .then(nextMessages => setMessages(nextMessages))
+  //     .catch(error => setMessageError(error.message))
+  //     .finally(() => setMessagesLoading(false));
+  // }, [user]);
+
 
   // ======================================================
   // PART 6 - REALTIME MESSAGE SUBSCRIPTION
@@ -96,31 +97,29 @@ export default function App() {
   // VERIFY: Two clients show new messages without refreshing.
   // NEXT: Search for "PART 7 - CLEAN UP THE SUBSCRIPTION" below.
   // ======================================================
-  /*
-  React.useEffect(() => {
-    if (!user) {
-      setMessages([]);
-      setMessagesLoading(false);
-      return undefined;
-    }
 
-    setMessagesLoading(true);
-    setMessageError('');
-    const unsubscribe = subscribeToMessages(
-      nextMessages => {
-        setMessages(nextMessages);
-        setMessagesLoading(false);
-      },
-      error => {
-        setMessageError(error.message);
-        setMessagesLoading(false);
-      },
-    );
+  React.useEffect(() => {
+  if (!user) return;
+
+  setMessagesLoading(true);
+  setMessageError('');
+
+  const unsubscribe = subscribeToMessages(
+    nextMessages => {
+      setMessages(nextMessages);
+      setMessagesLoading(false);
+    },
+    error => {
+      setMessageError(error.message);
+      setMessagesLoading(false);
+    }
+  );
 
     // PART 7 - Uncomment this line so the effect stops listening when it ends.
-    // return unsubscribe;
+
+  return unsubscribe;
   }, [user]);
-  */
+
 
   const sendDisabled = !messageText.trim() || sending || !user;
 
@@ -163,8 +162,12 @@ export default function App() {
               </Pressable>
             </View>
             <Text style={styles.muted}>
-              {!authReady ? 'Auth observer not enabled yet. Complete Part 2.' : user ? `Signed in as ${user.email}` : 'You are signed out.'}
-            </Text>
+            {!authReady
+              ? 'Checking your sign-in…'
+              : user
+                ? `Signed in as ${user.email}`
+                : 'Welcome to the message board'}
+          </Text>
             {user ? (
               <Pressable accessibilityRole="button" disabled={authBusy} onPress={() => runAuthOperation(signOutCurrentUser)}>
                 <Text style={styles.secondaryText}>Sign out</Text>
@@ -186,7 +189,8 @@ export default function App() {
                 <Text style={styles.primaryText}>Send</Text>
               </Pressable>
             </View>
-            {messageError ? <Text accessibilityRole="alert" style={styles.error}>{messageError}</Text> : null}
+            {sendError ? (<Text accessibilityRole="alert" style={styles.error}>{sendError}</Text>) : null}
+            {messageError ? (<Text accessibilityRole="alert" style={styles.error}>Messages could not be loaded: {messageError}</Text>) : null}
             <FlatList
               contentContainerStyle={styles.listContent}
               data={messages}
@@ -194,7 +198,11 @@ export default function App() {
               keyboardShouldPersistTaps="handled"
               ListEmptyComponent={(
                 <Text style={styles.muted}>
-                  {messagesLoading ? 'Loading messages…' : 'No messages yet. Sign in and start the conversation!'}
+                  {messagesLoading
+                    ? 'Loading messages…'
+                    : user
+                      ? 'No messages yet. Start the conversation!'
+                      : 'No messages yet. Sign in and start the conversation!'}
                 </Text>
               )}
               renderItem={({ item }) => (

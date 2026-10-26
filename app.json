@@ -15,6 +15,10 @@
       "supportsTablet": true
     },
     "android": {},
-    "web": {}
+    "web": {},
+    "plugins": [
+      "expo-asset",
+      "expo-status-bar"
+    ]
   }
 }
