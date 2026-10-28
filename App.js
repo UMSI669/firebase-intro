@@ -26,7 +26,6 @@ export default function App() {
   // VERIFY: The status below changes from “Checking…” to signed-out or signed-in.
   // NEXT: Search for "PART 3 - SIGN UP, SIGN IN, AND SIGN OUT" in authService.js.
   // ======================================================
-  /*
   React.useEffect(() => {
     const unsubscribe = observeAuthState(nextUser => {
       setUser(nextUser);
@@ -35,7 +34,6 @@ export default function App() {
 
     return unsubscribe;
   }, []);
-  */
 
   // These buttons and error messages are already wired to the service stubs.
   // PART 3 works as soon as the three return lines in authService.js are enabled.
@@ -73,6 +71,7 @@ export default function App() {
   // VERIFY: Existing messages appear once when the signed-in board opens.
   // NEXT: For live updates, disable this effect and search for "PART 6" below.
   // ======================================================
+  /* Part 5 is kept as a one-time read example. Part 6 is the active listener. */
   /*
   React.useEffect(() => {
     if (!user) return;
@@ -96,7 +95,6 @@ export default function App() {
   // VERIFY: Two clients show new messages without refreshing.
   // NEXT: Search for "PART 7 - CLEAN UP THE SUBSCRIPTION" below.
   // ======================================================
-  /*
   React.useEffect(() => {
     if (!user) {
       setMessages([]);
@@ -112,15 +110,13 @@ export default function App() {
         setMessagesLoading(false);
       },
       error => {
-        setMessageError(error.message);
+        setMessageError(`Messages could not be loaded: ${error.message}`);
         setMessagesLoading(false);
       },
     );
 
-    // PART 7 - Uncomment this line so the effect stops listening when it ends.
-    // return unsubscribe;
+    return unsubscribe;
   }, [user]);
-  */
 
   const sendDisabled = !messageText.trim() || sending || !user;
 
@@ -134,7 +130,7 @@ export default function App() {
           <Text style={styles.copy}>A shared message board. As you work through the parts below, this static screen will become a realtime app.</Text>
 
           <View style={styles.panel}>
-            <Text style={styles.subheading}>Join the conversation</Text>
+            <Text style={styles.subheading}>Welcome to the message board</Text>
             <TextInput
               accessibilityLabel="Email"
               autoCapitalize="none"
@@ -163,7 +159,7 @@ export default function App() {
               </Pressable>
             </View>
             <Text style={styles.muted}>
-              {!authReady ? 'Auth observer not enabled yet. Complete Part 2.' : user ? `Signed in as ${user.email}` : 'You are signed out.'}
+              {!authReady ? 'Checking your sign-in…' : user ? `Signed in as ${user.email}` : 'You are signed out.'}
             </Text>
             {user ? (
               <Pressable accessibilityRole="button" disabled={authBusy} onPress={() => runAuthOperation(signOutCurrentUser)}>
@@ -194,7 +190,7 @@ export default function App() {
               keyboardShouldPersistTaps="handled"
               ListEmptyComponent={(
                 <Text style={styles.muted}>
-                  {messagesLoading ? 'Loading messages…' : 'No messages yet. Sign in and start the conversation!'}
+                  {messagesLoading ? 'Loading messages…' : 'No messages yet. Start the conversation!'}
                 </Text>
               )}
               renderItem={({ item }) => (
