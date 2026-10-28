@@ -26,7 +26,7 @@ export default function App() {
   // VERIFY: The status below changes from “Checking…” to signed-out or signed-in.
   // NEXT: Search for "PART 3 - SIGN UP, SIGN IN, AND SIGN OUT" in authService.js.
   // ======================================================
-  /*
+
   React.useEffect(() => {
     const unsubscribe = observeAuthState(nextUser => {
       setUser(nextUser);
@@ -35,7 +35,6 @@ export default function App() {
 
     return unsubscribe;
   }, []);
-  */
 
   // These buttons and error messages are already wired to the service stubs.
   // PART 3 works as soon as the three return lines in authService.js are enabled.
@@ -73,17 +72,16 @@ export default function App() {
   // VERIFY: Existing messages appear once when the signed-in board opens.
   // NEXT: For live updates, disable this effect and search for "PART 6" below.
   // ======================================================
-  /*
-  React.useEffect(() => {
-    if (!user) return;
 
-    setMessagesLoading(true);
-    loadMessagesOnce()
-      .then(nextMessages => setMessages(nextMessages))
-      .catch(error => setMessageError(error.message))
-      .finally(() => setMessagesLoading(false));
-  }, [user]);
-  */
+  // React.useEffect(() => {
+  //   if (!user) return;
+
+  //   setMessagesLoading(true);
+  //   loadMessagesOnce()
+  //     .then(nextMessages => setMessages(nextMessages))
+  //     .catch(error => setMessageError(error.message))
+  //     .finally(() => setMessagesLoading(false));
+  // }, [user]);
 
   // ======================================================
   // PART 6 - REALTIME MESSAGE SUBSCRIPTION
@@ -96,7 +94,7 @@ export default function App() {
   // VERIFY: Two clients show new messages without refreshing.
   // NEXT: Search for "PART 7 - CLEAN UP THE SUBSCRIPTION" below.
   // ======================================================
-  /*
+
   React.useEffect(() => {
     if (!user) {
       setMessages([]);
@@ -118,9 +116,8 @@ export default function App() {
     );
 
     // PART 7 - Uncomment this line so the effect stops listening when it ends.
-    // return unsubscribe;
+    return unsubscribe;
   }, [user]);
-  */
 
   const sendDisabled = !messageText.trim() || sending || !user;
 
